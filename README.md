@@ -57,6 +57,8 @@ Tiktok_Signature 工具提供如下功能：
 
 ## 参考项目
 
+- **https://github.com/aithedev/X-Bogus (原创作者)**
+
 - https://github.com/HH7H/X-Bogus/
 
 - https://github.com/B1gM8c/X-Bogus
