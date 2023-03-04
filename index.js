@@ -35,6 +35,38 @@ app.post("/", async (req, res) => {
   }
 });
 
+app.get("/", (req, res) => {
+  res.status(200).send(`
+    <html>
+      <head>
+        <title>Tiktok_Signature</title>
+        <style>
+          body {
+            background-color: #f2f2f2;
+            font-family: Arial, sans-serif;
+            text-align: center;
+          }
+          h1 {
+            color: #333;
+            font-size: 3rem;
+            margin-top: 3rem;
+          }
+          p {
+            color: #666;
+            font-size: 1.5rem;
+            margin-top: 1.5rem;
+          }
+        </style>
+      </head>
+      <body>
+        <h1>Tiktok_Signature</h1>
+        <p>自动生成抖音 xbogus、mstoken 和 ttwid</p>
+        <p>使用方法：<a href="https://github.com/5ime/Tiktok_Signature" target="_blank">https://github.com/5ime/Tiktok_Signature</a></p>
+      </body>
+    </html>
+  `);
+});
+
 function msToken(length) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   const randomBytes = crypto.randomBytes(length);
