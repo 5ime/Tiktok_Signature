@@ -1,5 +1,5 @@
-const axios = require('axios');
-const crypto = require('crypto');
+const request = require("request");
+const crypto = require("crypto");
 const express = require("express");
 const { sign } = require("./Signer.js");
 
@@ -26,8 +26,8 @@ app.post("/", async (req, res) => {
         xbogus: xbogus,
         mstoken: xbogusToken,
         ttwid: ttwid,
-        url: newUrl
-      }
+        url: newUrl,
+      },
     });
   } catch (err) {
     console.error(err);
@@ -68,31 +68,53 @@ app.get("/", (req, res) => {
 });
 
 function msToken(length) {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   const randomBytes = crypto.randomBytes(length);
-  return Array.from(randomBytes, byte => characters[byte % characters.length]).join('');
+  return Array.from(
+    randomBytes,
+    (byte) => characters[byte % characters.length]
+  ).join("");
 }
 
 async function getTtwid() {
   try {
-    const url = 'https://ttwid.bytedance.com/ttwid/union/register/';
-    const data = {
-      "region": "cn",
-      "aid": 1768,
-      "needFid": false,
-      "service": "www.ixigua.com",
-      "migrate_info": { "ticket": "", "source": "node" },
-      "cbUrlProtocol": "https",
-      "union": true
+    const url = "https://ttwid.bytedance.com/ttwid/union/register/";
+    const options = {
+      method: "POST",
+      url,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        region: "cn",
+        aid: 1768,
+        needFid: false,
+        service: "www.ixigua.com",
+        migrate_info: {
+          ticket: "",
+          source: "node",
+        },
+        cbUrlProtocol: "https",
+        union: true,
+      }),
     };
-    const response = await axios.post(url, data, { headers: { 'Content-Type': 'application/json' } });
-    const setCookie = response.headers['set-cookie'];
+    const response = await new Promise((resolve, reject) => {
+      request(options, (error, response, _) => {
+        if (error) {
+          reject("An error has occurred: ", error);
+        } else {
+          resolve(response);
+        }
+      });
+    });
+    const setCookie = await response.headers["set-cookie"];
     const regex = /ttwid=([^;]+)/;
     const match = regex.exec(setCookie[0]);
-    return match && match.length > 1 ? match[1] : '';
+    return match && match.length > 1 ? match[1] : "";
   } catch (error) {
     console.error(error);
-    return '';
+    return "";
   }
 }
 
